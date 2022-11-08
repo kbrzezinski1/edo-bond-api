@@ -26,7 +26,7 @@ inflation_data = None
 
 @app.route("/")
 def home():
-    return "api"
+    return "<p>Use to get current or history of prices of edo bonds</p><p>/bond/edo(month)(year)/(day)/price or /bond/edo(month)(year)/(day)/history</p> <p>example: https://edobond-api.herokuapp.com/bond/edo1030/11/price</p>"
 
 @app.before_first_request
 def before_first_request():
@@ -63,7 +63,7 @@ def post(pid, day):
     if diff.days > 0:
         td = datetime.utcnow() - bond_date
         price = 100 + td.days*(percentage/365)
-        return jsonify({'current_price': round(price, 2)}), 200
+        return jsonify({'current_price': round(price, 2)}), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
     price = 100 + percentage
     while diff.days < 0:
@@ -75,7 +75,7 @@ def post(pid, day):
         else:
             price = price + td.days*((inflation + marge)/365)/100*price
         diff = diff + relativedelta(years=1) + datetime.utcnow() - datetime.utcnow()
-    return jsonify({'current_price': round(price, 2)}), 200
+    return jsonify({'current_price': round(price, 2)}), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 @app.route('/bond/<pid>/<day>/history', methods=['GET'])      
 def posthis(pid, day):   
@@ -106,7 +106,7 @@ def posthis(pid, day):
             op_date = bond_date + relativedelta(days = i)
             data[op_date.strftime("%d-%m-%Y")] = round(price, 2)
             i += 1
-        return json.dumps(data, indent=4), 200
+        return json.dumps(data, indent=4), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
     while i <= 365:                  
         price = 100 + i*(percentage/365)
@@ -131,7 +131,7 @@ def posthis(pid, day):
             data.update(make_history_price(price, i, 1, data, inflation, marge, bond_date, td))
             price = price + td.days*((inflation + marge)/365)/100*price
         diff = diff + relativedelta(days=365)  
-    return json.dumps(data, indent=4), 200
+    return json.dumps(data, indent=4), 200, {'ContentType':'application/json'} 
 
 
 def get_inflation(bond_date, i):
