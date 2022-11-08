@@ -122,7 +122,7 @@ def posthis(pid, day):
         try: 
             inflation = get_inflation(bond_date, i)
         except:
-            return jsonify({'error':  "something went wrong with calculatin inflation"}), 404
+            return jsonify({'error':  "something went wrong with calculating inflation"}), 404
         td = datetime.utcnow() - (bond_date + relativedelta(years=i))
         if td.days > 365:
             data.update(make_history_price(price, i, 1, data, inflation, marge, bond_date, td))
@@ -131,7 +131,7 @@ def posthis(pid, day):
             data.update(make_history_price(price, i, 1, data, inflation, marge, bond_date, td))
             price = price + td.days*((inflation + marge)/365)/100*price
         diff = diff + relativedelta(days=365)  
-    return json.dumps(data, indent=4), 200, {'ContentType':'application/json'} 
+    return json.dumps(data, indent=4), 200, {'Content-Type':'application/json; charset=utf-8'} 
 
 
 def get_inflation(bond_date, i):
