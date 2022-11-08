@@ -3,3 +3,5 @@ requests
 gunicorn
 bs4
 datetime
+dateutil
+re

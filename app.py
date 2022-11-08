@@ -5,7 +5,6 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
-import re
 
 app = Flask(__name__)
 
