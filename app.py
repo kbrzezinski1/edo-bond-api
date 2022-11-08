@@ -39,8 +39,8 @@ def before_first_request():
     global inflation_data
     inflation_data = json.loads(Jresponse)  
 
-@app.route('/bond/<pid>/price', methods=['GET'])      
-def post(pid):   
+@app.route('/bond/<pid>/<day>/price', methods=['GET'])      
+def post(pid, day):   
     url = f"https://www.obligacjeskarbowe.pl/oferta-obligacji/obligacje-10-letnie-edo/{pid}"
 
     try:
@@ -56,6 +56,8 @@ def post(pid):
     except:
         return jsonify({'error':  "something went wrong with collectin innitial data"}), 404
     
+    day = int(day) - 1
+    bond_date = bond_date + relativedelta(days=day)
     diff = bond_date + relativedelta(years=1) - datetime.utcnow()
     i = 0
     if diff.days > 0:
@@ -75,8 +77,8 @@ def post(pid):
         diff = diff + relativedelta(years=1) + datetime.utcnow() - datetime.utcnow()
     return jsonify({'current_price': round(price, 2)}), 200
 
-@app.route('/bond/<pid>/history', methods=['GET'])      
-def posthis(pid):   
+@app.route('/bond/<pid>/<day>/history', methods=['GET'])      
+def posthis(pid, day):   
     url = f"https://www.obligacjeskarbowe.pl/oferta-obligacji/obligacje-10-letnie-edo/{pid}"
 
     try:
@@ -92,6 +94,8 @@ def posthis(pid):
     except:
         return jsonify({'error':  "something went wrong with collecting innitial data"}), 404
     
+    day = int(day) - 1
+    bond_date = bond_date + relativedelta(days=day)
     data = {}
     diff = bond_date + relativedelta(years=1) - datetime.utcnow()
     i = 0
@@ -103,7 +107,6 @@ def posthis(pid):
             data[op_date.strftime("%d-%m-%Y")] = round(price, 2)
             i += 1
         return json.dumps(data, indent=4), 200
-
 
     while i <= 365:                  
         price = 100 + i*(percentage/365)
