@@ -108,7 +108,7 @@ def posthis(pid, day):
             op_date = bond_date + relativedelta(days = i)
             element = {
                 "date" : op_date.strftime("%Y-%m-%d"),
-                "price" : format(round(tmpprice, 2), '.2f')
+                "price" : format(round(price, 2), '.2f')
             }
             bond_list.append(element)
             i += 1
