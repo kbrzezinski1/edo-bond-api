@@ -7,6 +7,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 months_dict = {
   1: "Styczeń",
@@ -96,8 +97,6 @@ def posthis(pid, day):
     
     day = int(day) - 1
     bond_date = bond_date + relativedelta(days=day)
-    data = {}
-    bond_name = {"bond" : pid}
     bond_list = []
     diff = bond_date + relativedelta(years=1) - datetime.utcnow()
     i = 0
@@ -112,8 +111,7 @@ def posthis(pid, day):
             }
             bond_list.append(element)
             i += 1
-        cc = bond_name,"values", bond_list
-        return json.dumps(cc, indent=4), 200, {'Content-Type': 'application/json; charset=utf-8'}
+        return jsonify(bond = pid, values = bond_list)
 
     while i <= 365:                  
         price = 100 + i*(percentage/365)
@@ -142,8 +140,7 @@ def posthis(pid, day):
             bond_list.extend(make_history_price(price, i, 1, inflation, marge, bond_date, td))
             price = price + td.days*((inflation + marge)/365)/100*price
         diff = diff + relativedelta(days=365)
-    cc = bond_name,"values", bond_list
-    return json.dumps(cc, indent=4), 200, {'Content-Type':'application/json; charset=utf-8'} 
+    return jsonify(bond = pid, values = bond_list)
 
 
 def get_inflation(bond_date, i):
