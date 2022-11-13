@@ -173,7 +173,7 @@ def get_bond_date(soup):
 
 def make_history_price(price, i, j, inflation, marge, bond_date, td):
     tlist = []  
-    while j <= td.days  and j <= 365:               
+    while j < td.days  and j <= 365:               
         tmpprice = price + j*((inflation + marge)/365)/100*price
         op_date = bond_date + relativedelta(days = j) + relativedelta(years = i)
         j += 1
